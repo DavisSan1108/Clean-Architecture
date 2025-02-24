@@ -3,31 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Domain\User\UseCases\CreateUserUseCase;
-use App\Domain\User\UseCases\GetUserUseCase;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     private $createUserUseCase;
-    private $getUserUseCase;
 
-    public function __construct(CreateUserUseCase $createUserUseCase, GetUserUseCase $getUserUseCase)
+    public function __construct(CreateUserUseCase $createUserUseCase)
     {
         $this->createUserUseCase = $createUserUseCase;
-        $this->getUserUseCase = $getUserUseCase;
-    }
-
-    /**
-     * Maneja la solicitud GET para obtener todos los usuarios.
-     */
-    public function index()
-    {
-        $users = $this->getUserUseCase->execute();
-
-        return response()->json([
-            'success' => true,
-            'data' => $users
-        ], 200);
     }
 
     /**

@@ -9,9 +9,9 @@ class User extends Model
 {
     use HasFactory;
 
-    // ✅ Campos que se pueden rellenar
+    // ✅ Define los campos que se pueden llenar con create()
     protected $fillable = ['name', 'email', 'password', 'rol'];
 
-    // ✅ Ocultar campos sensibles
+    // ✅ Oculta la contraseña en las respuestas JSON
     protected $hidden = ['password'];
 }

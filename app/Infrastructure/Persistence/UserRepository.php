@@ -2,36 +2,42 @@
 
 namespace App\Infrastructure\Persistence;
 
-use App\Domain\User\Entities\User;
 use App\Domain\User\Repositories\UserRepositoryInterface;
+use App\Models\User as EloquentUser; // ✅ Usa el modelo Eloquent para acceder a métodos como create()
 
 class UserRepository implements UserRepositoryInterface
 {
     public function getAll()
     {
-        return User::all();
+        return EloquentUser::all();
     }
 
     public function create(array $data)
     {
-        return User::create($data);
+        // ✅ Usa el modelo Eloquent para crear el usuario
+        return EloquentUser::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'rol' => $data['rol'],
+        ]);
     }
 
     public function findById(int $id)
     {
-        return User::find($id);
+        return EloquentUser::find($id);
     }
 
     public function update(int $id, array $data)
     {
-        $user = User::findOrFail($id);
+        $user = EloquentUser::findOrFail($id);
         $user->update($data);
         return $user;
     }
 
     public function delete(int $id)
     {
-        $user = User::findOrFail($id);
+        $user = EloquentUser::findOrFail($id);
         return $user->delete();
     }
 }
