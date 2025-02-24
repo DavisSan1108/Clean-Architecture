@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\User\UseCases\CreateUserUseCase;
 use App\Domain\User\UseCases\GetUserUseCase;
 use App\Domain\User\UseCases\DeleteUserUseCase;
+use App\Domain\User\UseCases\UpdateUserUseCase;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -13,15 +14,18 @@ class UserController extends Controller
     private $createUserUseCase;
     private $getUserUseCase;
     private $deleteUserUseCase;
+    private $updateUserUseCase;
 
     public function __construct(
         CreateUserUseCase $createUserUseCase, 
         GetUserUseCase $getUserUseCase, 
-        DeleteUserUseCase $deleteUserUseCase
+        DeleteUserUseCase $deleteUserUseCase,
+        UpdateUserUseCase $updateUserUseCase
     ) {
         $this->createUserUseCase = $createUserUseCase;
         $this->getUserUseCase = $getUserUseCase;
         $this->deleteUserUseCase = $deleteUserUseCase;
+        $this->updateUserUseCase = $updateUserUseCase;
     }
 
     /**
@@ -65,6 +69,33 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => "Usuario con ID $id eliminado exitosamente."
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 404);
+        }
+    }
+
+    /**
+     * Maneja la solicitud PUT/PATCH para actualizar un usuario.
+     */
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|string|email|unique:users,email,' . $id,
+            'password' => 'sometimes|string|min:6',
+            'rol' => 'sometimes|string|in:admin,user',
+        ]);
+
+        try {
+            $user = $this->updateUserUseCase->execute($id, $validated);
+
+            return response()->json([
+                'success' => true,
+                'data' => $user
             ], 200);
         } catch (Exception $e) {
             return response()->json([

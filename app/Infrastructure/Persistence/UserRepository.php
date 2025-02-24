@@ -30,6 +30,12 @@ class UserRepository implements UserRepositoryInterface
     public function update(int $id, array $data)
     {
         $user = EloquentUser::findOrFail($id);
+
+        // Si se pasa una nueva contraseña, la encripta
+        if (isset($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
+        }
+
         $user->update($data);
         return $user;
     }
