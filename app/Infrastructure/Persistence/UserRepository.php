@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Persistence;
 
 use App\Domain\User\Repositories\UserRepositoryInterface;
-use App\Models\User as EloquentUser; // ✅ Usa el modelo Eloquent para acceder a métodos como create()
+use App\Models\User as EloquentUser;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -14,7 +14,6 @@ class UserRepository implements UserRepositoryInterface
 
     public function create(array $data)
     {
-        // ✅ Usa el modelo Eloquent para crear el usuario
         return EloquentUser::create([
             'name' => $data['name'],
             'email' => $data['email'],
